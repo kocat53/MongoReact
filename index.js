@@ -38,3 +38,27 @@ app.post('/register', (req, res) => {
     });
   });
 });
+
+app.post('/login', (req, res) => {
+  // 1.요청된 이메일 DB에서 있는지 찾기
+  User.findOne({ email: req.body.email }, (err, user) => {
+    if (user) {
+      return res.json({
+        loginSuccces: false,
+        message: '그런유저 엄씀'
+      });
+    }
+    // 2. email과 비번이 일치하는지 확인
+    user.comparePassword(req.body.password, (err, isMatch) => {
+      if (!isMatch)
+        return res.json({
+          loginSuccces: false,
+          message: '비번틀림'
+        });
+      // 3. 모두 일치하면 토큰생성
+      this.genToken((err, user) => {
+        console.log(22);
+      });
+    });
+  });
+});
